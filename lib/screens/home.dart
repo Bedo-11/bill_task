@@ -163,24 +163,16 @@ class _FoodCardState extends State<FoodCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  CustomButton("حفط", () {
-                    setState(() {
-                      if (cart.items.isEmpty) {
-                        print("its empty!");
-                      } else {
-                        Provider.of<Orders>(context, listen: false).addItem(
-                            cart.items.values.toList(), cart.totalAmount);
-                        cart.clearCart();
-                      }
-                    });
-                    print("حفط");
-                  }, Color(0xff84C38C)),
-                  CustomButton("تسديد", () {
-                    print("تسديد");
-                  }, Color(0xff29B4C5)),
-                  CustomButton("طباعة", () {
-                    print("طباعة");
-                  }, Color(0xff475359)),
+                  CustomButtonWidget(
+                    title: 'حفظ',
+                    color: Color(0xff84C38C),
+                    cart: cart,
+                  ),
+                  CustomButtonWidget(
+                    title: 't',
+                    color: Color(0xff84C38C),
+                    cart: cart,
+                  ),
                 ],
               ),
             ),
@@ -191,26 +183,6 @@ class _FoodCardState extends State<FoodCard> {
   }
 
   // button
-  TextButton CustomButton(String title, VoidCallback func, Color color) {
-    return TextButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(color),
-        padding: MaterialStateProperty.all(
-          EdgeInsets.fromLTRB(40, 10, 40, 10),
-        ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.0),
-          ),
-        ),
-      ),
-      onPressed: func,
-      child: Text(
-        title,
-        style: TextStyle(color: Colors.white, fontSize: 30),
-      ),
-    );
-  }
 
   Expanded ItemsContainer3() {
     return Expanded(
@@ -221,3 +193,60 @@ class _FoodCardState extends State<FoodCard> {
         ));
   }
 }
+
+class CustomButtonWidget extends StatefulWidget {
+  final Cart cart;
+  final Color color;
+  final String title;
+  // final VoidCallback func;
+
+  const CustomButtonWidget({this.title, this.cart, this.color});
+
+  @override
+  State<CustomButtonWidget> createState() => _CustomButtonWidgetState();
+}
+
+class _CustomButtonWidgetState extends State<CustomButtonWidget> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(widget.color),
+        padding: MaterialStateProperty.all(
+          EdgeInsets.fromLTRB(40, 10, 40, 10),
+        ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+        ),
+      ),
+      onPressed: () async {
+        setState(() {
+          _isLoading = true;
+        });
+        if (widget.cart.items.isEmpty) {
+          print("its empty!");
+        } else {
+          await Provider.of<Orders>(context, listen: false).addItem(
+              widget.cart.items.values.toList(), widget.cart.totalAmount);
+          setState(() {
+            _isLoading = false;
+          });
+          widget.cart.clearCart();
+        }
+      },
+      child: Text(
+        widget.title,
+        style: TextStyle(color: Colors.white, fontSize: 30),
+      ),
+    );
+  }
+}
+
+//
+// (widget.cart.totalAmount <= 0 || _isLoading)
+// ? null
+// :

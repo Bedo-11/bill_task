@@ -13,11 +13,11 @@ class Product with ChangeNotifier {
 class Products with ChangeNotifier {
   List<Product> _items = [
     Product("1", "برجر", 50, "assets/images/burger.png"),
-    Product("2", "pizza", 70, "assets/images/pizza.png"),
+    Product("2", "بيتزا", 70, "assets/images/pizza.png"),
     Product("3", "برجر", 50, "assets/images/burger.png"),
-    Product("4", "pizza", 70, "assets/images/pizza.png"),
+    Product("4", "بيتزا", 70, "assets/images/pizza.png"),
     Product("5", "برجر", 50, "assets/images/burger.png"),
-    Product("6", "pizza", 70, "assets/images/pizza.png"),
+    Product("6", "بيتزا", 70, "assets/images/pizza.png"),
   ];
 
   List<Product> get items {

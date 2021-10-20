@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Home(),
+        home: FoodCard(),
         routes: {
           OrderScreen.routename: (ctx) => OrderScreen(),
         },

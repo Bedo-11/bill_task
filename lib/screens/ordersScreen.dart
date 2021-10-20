@@ -14,22 +14,19 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  String displayname;
-  Map<String, dynamic> l;
-  var data = [];
-  getData() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      displayname = preferences.getString('order');
-      l = jsonDecode(displayname) as Map<String, dynamic>;
-      data.add(l);
-      print(data);
-    });
-  }
-
+  var _isLoading = false;
   @override
   void initState() {
-    getData();
+    Future.delayed(Duration.zero).then((_) async {
+      setState(() {
+        _isLoading = true;
+      });
+      await Provider.of<Orders>(context, listen: false).getOrders();
+      setState(() {
+        _isLoading = false;
+      });
+    });
+    // Provider.of<Orders>(context, listen: false).getOrders();
   }
 
   Widget build(BuildContext context) {
@@ -41,12 +38,14 @@ class _OrderScreenState extends State<OrderScreen> {
           title: Text("الطلبات السابقة"),
           centerTitle: false,
         ),
-        body: ListView.builder(
-          itemBuilder: (ctx, i) => OrderItemWidget(
-            ordersData.orders[i],
-          ),
-          itemCount: ordersData.orders.length,
-        ),
+        body: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemBuilder: (ctx, i) => OrderItemWidget(
+                  ordersData.orders[i],
+                ),
+                itemCount: ordersData.orders.length,
+              ),
       ),
     );
   }
